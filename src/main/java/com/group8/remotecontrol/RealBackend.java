@@ -51,19 +51,75 @@ public class RealBackend implements BackendController {
 
     @Override
     public void executeCommand(int buttonIndex) {
-        remote.pressButton(buttonIndex);
-        updateGUI();
+
+        // Buttons 1–12 (0–11): normal commands
+        if (buttonIndex < 12) {
+            remote.pressButton(buttonIndex);
+            updateGUI();
+            return;
+        }
+
+        // Button 13 (index 12): Undo
+        if (buttonIndex == 12) {
+            remote.undo();
+            updateGUI();
+            return;
+        }
+
+        // Button 14 (index 13): Reset
+        if (buttonIndex == 13) {
+            // Load factory defaults
+            mappings = repo.loadFactoryMappings();
+
+            // Apply them to the remote
+            applyMappings();
+
+            // Update GUI
+            gui.refreshButtonLabels();
+            gui.refreshDropdowns();
+            updateGUI();
+        }
     }
 
     @Override
     public void assignCommand(int buttonIndex, String selectedOption) {
-        mappings.put(buttonIndex + 1, selectedOption);
+
+        if (selectedOption == null || selectedOption.equals("None")) {
+            mappings.put(buttonIndex + 1, "None");
+            return;
+        }
+
+        String key;
+        switch (selectedOption) {
+            case "Living Room Light":
+                key = "ToggleInsideLight";
+                break;
+            case "Outdoor Light":
+                key = "ToggleOutsideLight";
+                break;
+            case "Garage Door":
+                key = "ToggleGarageDoor";
+                break;
+            case "Air Conditioner":
+                key = "ToggleAC";
+                break;
+            case "All Lights":
+                key = "ToggleAllLights";
+                break;
+            default:
+                key = "None";
+        }
+
+        mappings.put(buttonIndex + 1, key);
     }
+
+
 
     public void saveMappings() {
         repo.saveMappings(mappings);
         applyMappings();
         gui.refreshButtonLabels();
+        gui.refreshDropdowns();
     }
 
     @Override
@@ -80,16 +136,15 @@ public class RealBackend implements BackendController {
 
     private String prettyName(String cmd) {
         return switch (cmd) {
-            case "ToggleInsideLight" -> "Living Light";
+            case "ToggleInsideLight" -> "Living Room Light";
             case "ToggleOutsideLight" -> "Outdoor Light";
             case "ToggleGarageDoor" -> "Garage Door";
-            case "ToggleAC" -> "AC";
+            case "ToggleAC" -> "Air Conditioner";
             case "ToggleAllLights" -> "All Lights";
-            case "Undo" -> "Undo";
-            case "Reset" -> "Reset";
             default -> "";
         };
     }
+
 
     private void updateGUI() {
         FloorPlanPanel fp = gui.getFloorPlanPanel();

@@ -9,6 +9,7 @@ public class RemoteControlGUI extends JFrame {
 
     private BackendController backend;
     private List<JButton> buttonList = new ArrayList<>();
+    private List<JComboBox<String>> dropdownList = new ArrayList<>();
 
     public void setBackend(BackendController backend) {
         this.backend = backend;
@@ -16,13 +17,14 @@ public class RemoteControlGUI extends JFrame {
     private final FloorPlanPanel floorPlanPanel;
 
     private static final String[] OPTIONS = {
+            "None",
             "Air Conditioner",
             "Garage Door",
-            "Living Room",
-            "Outdoor",
-            "Undo",
-            "Reset"
+            "Living Room Light",
+            "Outdoor Light",
+            "All Lights"
     };
+
 
     public RemoteControlGUI() {
 
@@ -72,12 +74,13 @@ public class RemoteControlGUI extends JFrame {
         rightPanel.add(new JLabel()); // filler
 
         // Add dropdowns
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 12; i++) {
             int index = i;
 
             JLabel label = new JLabel("Button " + (i + 1) + ":");
             JComboBox<String> dropdown = new JComboBox<>(OPTIONS);
             dropdown.setSelectedIndex(-1);
+            dropdownList.add(dropdown);
 
             dropdown.addActionListener(e -> {
                 String selected = (String) dropdown.getSelectedItem();
@@ -105,9 +108,33 @@ public class RemoteControlGUI extends JFrame {
     public void refreshButtonLabels() {
         for (int i = 0; i < buttonList.size(); i++) {
             JButton b = buttonList.get(i);
+
+            if (i == 12) {
+                b.setText("Undo");
+                continue;
+            }
+            if (i == 13) {
+                b.setText("Reset");
+                continue;
+            }
+
             b.setText(backend.getLabelForButton(i));
         }
     }
+
+    public void refreshDropdowns() {
+        for (int i = 0; i < dropdownList.size(); i++) {
+            JComboBox<String> dd = dropdownList.get(i);
+            String label = backend.getLabelForButton(i);
+
+            if (label == null || label.isBlank()) {
+                dd.setSelectedItem("None");
+            } else {
+                dd.setSelectedItem(label);
+            }
+        }
+    }
+
 
     public FloorPlanPanel getFloorPlanPanel() {
         return floorPlanPanel;

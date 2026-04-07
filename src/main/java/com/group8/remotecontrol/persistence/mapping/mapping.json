@@ -1,0 +1,14 @@
+{
+    "button4": "ToggleAC",
+    "button5": "ToggleAllLights",
+    "button2": "ToggleOutsideLight",
+    "button3": "ToggleGarageDoor",
+    "button8": "Living Room",
+    "button10": "None",
+    "button9": "None",
+    "button6": "None",
+    "button12": "None",
+    "button7": "None",
+    "button11": "None",
+    "button1": "ToggleInsideLight"
+}

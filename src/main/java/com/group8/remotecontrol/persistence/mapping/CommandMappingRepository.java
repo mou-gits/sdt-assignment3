@@ -1,22 +1,31 @@
-package com.group8.remotecontrol.persistence;
+package com.group8.remotecontrol.persistence.mapping;
 
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CommandMappingRepository {
 
-    private static final String FILE_PATH = "src/main/java/com/group8/remotecontrol/persistence/mapping/mapping.json";
+    InputStream is = getClass().getResourceAsStream("/com/group8/remotecontrol/persistence/mapping/mapping.json");
 
     public HashMap<Integer, String> loadMappings() {
         HashMap<Integer, String> map = new HashMap<>();
 
-        try {
-            String content = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+        try (InputStream is = getClass().getResourceAsStream(
+                "/com/group8/remotecontrol/persistence/mapping/mapping.json")) {
+
+            if (is == null) {
+                throw new FileNotFoundException("mapping.json not found in resources");
+            }
+
+            String content = new String(is.readAllBytes());
             JSONObject json = new JSONObject(content);
 
             for (int i = 1; i <= 12; i++) {
@@ -40,9 +49,9 @@ public class CommandMappingRepository {
                 json.put("button" + i, mappings.get(i));
             }
 
-            FileWriter writer = new FileWriter(FILE_PATH);
-            writer.write(json.toString(4)); // pretty print
-            writer.close();
+            // Write back to the resources folder (development only)
+            Path path = Paths.get("src/main/resources/com/group8/remotecontrol/persistence/mapping/mapping.json");
+            Files.write(path, json.toString(4).getBytes());
 
             System.out.println("Mappings saved.");
 

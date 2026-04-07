@@ -4,9 +4,8 @@ import com.group8.remotecontrol.command.Command;
 import com.group8.remotecontrol.devices.*;
 import com.group8.remotecontrol.invoker.RemoteControl;
 import com.group8.remotecontrol.persistence.CommandFactory;
-import com.group8.remotecontrol.persistence.CommandMappingRepository;
+import com.group8.remotecontrol.persistence.mapping.CommandMappingRepository;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class App___old {

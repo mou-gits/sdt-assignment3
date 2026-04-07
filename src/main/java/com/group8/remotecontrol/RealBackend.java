@@ -5,6 +5,7 @@ import com.group8.remotecontrol.command.Command;
 import com.group8.remotecontrol.devices.*;
 import com.group8.remotecontrol.invoker.*;
 import com.group8.remotecontrol.persistence.*;
+import com.group8.remotecontrol.persistence.mapping.CommandMappingRepository;
 import com.group8.remotecontrol.ui.*;
 
 import java.util.Map;

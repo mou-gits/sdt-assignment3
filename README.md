@@ -1,4 +1,5 @@
 # Programmable Remote Control System
+
 A full-stack OOP showcase using Command Pattern, Factory Pattern, GUI MVC separation, and stateful device simulation
 
 This project implements a programmable smart‑home remote control system using Java, Swing, and several classic Object‑Oriented Design Patterns. It demonstrates encapsulation, abstraction, polymorphism, inheritance, composition, inversion of control, and clean separation of concerns.
@@ -13,31 +14,39 @@ The system includes:
 - Full undo support
 - Reset-to-factory-default behavior
 
-# Key OOP Concepts Demonstrated
-## Encapsulation
+## Key OOP Concepts Demonstrated
+
+### Encapsulation
+
 Each device (AC, GarageDoor, InsideLight, OutsideLight) encapsulates its own state and exposes only meaningful operations (toggle(), setState(), isOn()).
 
-## Abstraction
+### Abstraction
+
 The Command interface abstracts all executable actions.
 The GUI never knows how a device works — only that a command can be executed or undone.
 
-##️ Polymorphism
+### Polymorphism
+
 Every concrete command (ToggleACCommand, ToggleGarageDoorCommand, etc.) implements the same Command interface.
 The remote control treats them uniformly.
 
-##️ Composition
+### Composition
+
 Commands hold references to devices.
 The remote control holds an array of RemoteButton objects.
 The backend composes devices, factory, repository, and remote.
 
-## Factory Pattern
+### Factory Pattern
+
 CommandFactory converts string names into actual command objects — enabling dynamic assignment from GUI dropdowns.
 
-## Command Pattern
+### Command Pattern
+
 The core of the system.
 Each button press triggers a Command.execute(), and undo triggers Command.undo().
 
-## Separation of Concerns
+### Separation of Concerns
+
 - UI Layer - RemoteControlGUI, FloorPlanPanel
 - Backend Controller - RealBackend
 - Invoker - RemoteControl, RemoteButton
@@ -71,22 +80,27 @@ flowchart LR
 ```
 
 ## Command Pattern Breakdown
+
 Command Interface
+
 ```java
 public interface Command {
     void execute();
     void undo();
 }
 ```
+
 Every action in the system is a Command.
 
 This gives us:
+
 - Uniform execution
 - Uniform undo
 - Decoupling between UI and devices
 - Extensibility (new commands require no changes to existing code)
 
 ## Class Relationships (UML)
+
 ```mermaid
 classDiagram
     class Command {
@@ -132,9 +146,11 @@ classDiagram
 ```
 
 ## Factory Pattern
+
 The CommandFactory converts string identifiers into actual command objects.
 
 This enables:
+
 - Dynamic assignment from GUI dropdowns
 - Loading mappings from JSON
 - Resetting to factory defaults
@@ -149,6 +165,7 @@ flowchart LR
 
 ##️ Persistence Layer
 CommandMappingRepository loads and saves button --- command mappings using JSON files:
+
 - factory.json --- default mappings
 - mapping.json --- user saved mappings
 
@@ -160,6 +177,7 @@ This demonstrates:
 - Clean separation of concerns
 
 ## GUI Architecture
+
 The GUI implementation is intentionally kept simple — it delegates all logic to the backend.
 
 ```mermaid
@@ -177,13 +195,14 @@ sequenceDiagram
 ```
 
 ## Undo Mechanism
+
 Undo is implemented using a stack of executed commands.
 
 - Every time a command executes, it is pushed onto the stack.
 - Undo pops the last command and calls undo().
 
-
 ## Floor Plan Visualization
+
 The FloorPlanPanel uses Swing drawing primitives to visually represent:
 
 - AC state
@@ -194,6 +213,7 @@ The FloorPlanPanel uses Swing drawing primitives to visually represent:
 The backend updates the panel after every command.
 
 ## Extending the System
+
 To add a new device:
 
 - Create a new device class
@@ -202,3 +222,18 @@ To add a new device:
 - Add the option to the GUI dropdown
 
 No other code changes required due to polymorphism + factory + decoupled UI.
+
+## Testing
+
+This project includes JUnit 5 tests for core components:
+
+- Device state behavior (e.g., `AirConditioner`, `InsideLight`)
+- Command pattern behavior (`ToggleACCommand`, `ToggleInsideLightCommand`, etc.)
+- Invoker behavior (`RemoteControl` with history/undo)
+- Factory behavior (`CommandFactory` mapping names to concrete commands)
+
+Tests can be run directly from IntelliJ (JUnit run configuration) or via Maven:
+
+```bash
+mvn test
+```
